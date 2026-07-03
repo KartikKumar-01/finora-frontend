@@ -1,13 +1,13 @@
 import Image from "next/image";
-import GlitchText from "./_components/GlitchText";
-import TextType from "./_components/TextType";
-import HeroImage from "./_components/HeroImage";
+import GlitchText from "../_components/GlitchText";
+import TextType from "../_components/TextType";
+import HeroImage from "../_components/HeroImage";
 import { stats } from "@/data/stats";
 import { features } from "@/data/features";
 import { testimonials } from "@/data/testimonial";
-import { Avatar, AvatarFallback, AvatarImage } from "./_components/ui/avatar";
 import { Star } from "lucide-react";
-import { Button } from "./_components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../_components/ui/avatar";
+import { Button } from "../_components/ui/button";
 
 
 

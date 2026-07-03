@@ -38,11 +38,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.className} ${poppins.variable} h-full antialiased bg-[#120f17]`}
     >
-      <body className="min-h-full flex flex-col text-white">
-        <header><Navbar /></header>
-        <main className="w-full flex flex-col items-center  pt-25">
-          {children}
-        </main>
+      <body className="min-h-full flex flex-col text-white bg-[#120f17]">
+        {children}
       </body>
     </html>
   );
