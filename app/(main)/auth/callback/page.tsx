@@ -1,13 +1,27 @@
 "use client"
-import React, { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation';
+import { authStore } from '@/store/auth.store';
 
 const AuthCallBackPage = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+  const isAuthenticated = authStore((s) => s.isAuthenticated);
+  const isLoading = authStore((s) => s.isLoading);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (isAuthenticated) {
+      router.replace("/");
+    } else {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   return (
-    <div>Callback page {searchParams.get('code')}</div>
+    <div className='w-full h-full flex items-center justify-center'>
+      Signing you in...
+    </div>
   )
 }
 

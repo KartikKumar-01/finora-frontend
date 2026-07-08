@@ -1,4 +1,4 @@
-import { ApiResponse, AuthResponse, AuthTokens, LoginRequest, OAuthCallbackCode, SignUpRequest, TokenResponse, User} from "@/types/auth.types";
+import { ApiResponse, AuthResponse, LoginRequest, OAuthCallbackCode, SignUpRequest, User} from "@/types/auth.types";
 import { api } from "../axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1";
@@ -27,5 +27,8 @@ export const authApi = {
     getMe: async (): Promise<User> => {
         const response = await api.get<ApiResponse<User>>('/auth/get-me');
         return response.data.data;
+    },
+    logout: async (): Promise<void> => {
+        await api.post('/auth/logout');
     }
 }

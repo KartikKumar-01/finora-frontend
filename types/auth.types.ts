@@ -1,9 +1,9 @@
 export interface User {
-    id: string;
+    userId: string;
     name: string;
     email: string;
     avatarUrl?: string;
-    provider?: "EMAIL" | "GOOGLE" | "GITHUB";
+    authProvider?: "EMAIL" | "GOOGLE" | "GITHUB";
 }
 
 export interface AuthTokens{
@@ -27,16 +27,8 @@ export interface ApiResponse<T> {
     data: T;
 }
 
-export interface AuthData{
-    userId: string;
-    name: string;
-    email: string;
-    avatarUrl?: string;
-    authProvider?: OAuthProvider;
-    accessToken: string;
-}
 
-export type AuthResponse = ApiResponse<AuthData>;
+export type AuthResponse = ApiResponse<User>;
 
 export type OAuthProvider = "GOOGLE" | "GITHUB";
 
@@ -46,9 +38,9 @@ export type TokenResponse = ApiResponse<AuthTokens>
 
 export interface AuthState{
     user: User | null;
-    accessToken: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
+    initialized: boolean;
     error: string | null;
 }
 
@@ -59,7 +51,7 @@ export interface AuthActions{
     handleOAuthCallback: (code: string) => Promise<void>
     logout: () => void;
     clearError: () => void;
-    setTokens: (accessToken: string) => Promise<void>;
+    hydrate: () => Promise<void>;
 }
 
 export type AuthStore = AuthState & AuthActions;

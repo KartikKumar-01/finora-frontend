@@ -1,21 +1,20 @@
 import { authApi } from "@/lib/api/auth.api";
-import { clearToken, persistToken } from "@/lib/token";
+import { clearToken } from "@/lib/token";
 import {
   AuthState,
   AuthStore,
   LoginRequest,
   OAuthProvider,
   SignUpRequest,
-  User,
 } from "@/types/auth.types";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 const initialState: AuthState = {
   user: null,
-  accessToken: null,
   isAuthenticated: false,
   isLoading: false,
+  initialized: false,
   error: null,
 };
 
@@ -26,21 +25,12 @@ export const authStore = create<AuthStore>()(
       login: async (credentials: LoginRequest) => {
         set({ isLoading: true, error: null }, false, "auth/loginStart");
         try {
-          const { success, message, data } = await authApi.login(credentials);
+          const { success, message, data: user } = await authApi.login(credentials);
 
           if (!success) throw Error(message);
 
-          const user: User = {
-            id: data.userId,
-            name: data.name,
-            email: data.email,
-            avatarUrl: data.avatarUrl,
-            provider: data.authProvider,
-          };
-          persistToken(data.accessToken);
           set(
             {
-              accessToken: data.accessToken,
               user,
               isAuthenticated: true,
               isLoading: false,
@@ -57,22 +47,12 @@ export const authStore = create<AuthStore>()(
       signup: async (credentials: SignUpRequest) => {
         set({ isLoading: true, error: null }, false, "auth/signupStart");
         try {
-          const { success, message, data } = await authApi.signup(credentials);
+          const { success, message, data: user } = await authApi.signup(credentials);
 
           if (!success) throw Error(message);
 
-          const user: User = {
-            id: data.userId,
-            name: data.name,
-            email: data.email,
-            avatarUrl: data.avatarUrl,
-            provider: data.authProvider,
-          };
-
-          persistToken(data.accessToken);
           set(
             {
-              accessToken: data.accessToken,
               user,
               isAuthenticated: true,
               isLoading: false,
@@ -91,20 +71,19 @@ export const authStore = create<AuthStore>()(
           window.location.href = authApi.getOAuthUrl(provider);
         }
       },
-      setTokens: async (accessToken: string) => {
+      hydrate: async () => {
+        console.log("hydrate called");
           set({isLoading: true, error: null}, false, "auth/hydrateStart");
           try{
-              persistToken(accessToken);
               const user = await authApi.getMe();
               set(
-                  {accessToken, user, isAuthenticated: true, isLoading: false},
+                  {user, isAuthenticated: true, isLoading: false, initialized: true},
                   false,
                   "auth/hydrateSuccess",
               );
           }catch{
-              clearToken();
               set(
-                  {...initialState, isLoading: false},
+                  {...initialState, isLoading: false, initialized: true},
                   false,
                   "auth/hydrateError",
               );
@@ -113,23 +92,13 @@ export const authStore = create<AuthStore>()(
       handleOAuthCallback: async (code: string) => {
         set({ isLoading: true, error: null }, false, "auth/oauthStart");
         try {
-          const { success, message, data } = await authApi.handleOAuthCallback(
+          const { success, message, data: user } = await authApi.handleOAuthCallback(
             code
           );
           if (!success) throw new Error(message);
 
-          const user: User = {
-            id: data.userId,
-            name: data.name,
-            email: data.email,
-            avatarUrl: data.avatarUrl,
-            provider: data.authProvider,
-          };
-          persistToken(data.accessToken);
-
           set(
             {
-              accessToken: data.accessToken,
               user,
               isAuthenticated: true,
               isLoading: false,
@@ -153,9 +122,12 @@ export const authStore = create<AuthStore>()(
           throw err;
         }
       },
-      logout: () => {
-        clearToken();
-        set({ ...initialState }, false, "auth/logout");
+      logout: async () => {
+        try{
+          await authApi.logout();
+        }finally{
+          set({ ...initialState , initialized: true}, false, "auth/logout");
+        }
       },
       clearError: () => set({ error: null }, false, "auth/clearError"),
     }),

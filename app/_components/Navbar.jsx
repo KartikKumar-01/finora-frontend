@@ -11,6 +11,11 @@ import { useRouter } from 'next/navigation'
 const Navbar = () => {
   const router = useRouter();
   const isAuthenticated = authStore((s) => s.isAuthenticated);
+  const user = authStore((s) => s.user);
+  const logout = authStore((s) => s.logout);
+
+  const avatarImage = user?.avatarUrl || "https://github.com/shadcn.png";
+  console.log(user);
 
 
   return (
@@ -41,7 +46,7 @@ const Navbar = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className='w-10 h-10 cursor-pointer'>
-                  <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+                  <AvatarImage src={avatarImage} alt="shadcn" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Button>
@@ -54,7 +59,7 @@ const Navbar = () => {
               </DropdownMenuGroup>
               <DropdownMenuSeparator className='bg-zinc-500' />
               <DropdownMenuGroup>
-                <DropdownMenuItem className='rounded-md text-red-500 hover:bg-red-700/10 focus:bg-red-500/10' variant="destructive">Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => logout()} className='rounded-md text-red-500 hover:bg-red-700/10 focus:bg-red-500/10' variant="destructive">Log out</DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
