@@ -32,7 +32,7 @@ const LoginPage = () => {
         // Do something with the form values.
         try{
             await login(data);
-            router.replace('/');
+            router.replace('/dashboard');
         }catch(err){
             console.log(err);
         }

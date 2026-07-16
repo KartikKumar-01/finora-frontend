@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from '@/app/_components/Navbar'
 
-import { Geist, Geist_Mono, Oswald, Poppins } from "next/font/google";
+import { Geist, Poppins } from "next/font/google";
+import AuthProvider from "@/providers/AuthProvider";
+import { Toaster } from "sonner";
+import Providers from "@/providers/Provider";
 
 const geistSans = Geist({
 
@@ -39,7 +41,10 @@ export default function RootLayout({
       className={`${geistSans.className} ${poppins.variable} h-full antialiased bg-[#120f17]`}
     >
       <body className="min-h-full flex flex-col text-white bg-[#120f17]">
-        {children}
+        <Providers>
+            {children}
+            <Toaster richColors />
+        </Providers>
       </body>
     </html>
   );

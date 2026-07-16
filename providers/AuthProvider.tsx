@@ -1,31 +1,35 @@
 "use client"
 import React, { useEffect, useRef } from 'react'
-import { authStore } from './auth.store'
+import { authStore } from '@/store/auth.store'
 import { Loader } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const hydrate = authStore((s) => s.hydrate);
     const isLoading = authStore((s) => s.isLoading);
     const initialized = authStore((s) => s.initialized);
+    const isAuthenticated = authStore((s) => s.isAuthenticated);
     const hadHydrated = useRef(false);
+    
+    const router = useRouter();
 
     useEffect(() => {
-        if (initialized) return;
-        hadHydrated.current = true;
-        hydrate();
-    }, [initialized, hydrate])
+        if(initialized && !isAuthenticated){
+            router.replace('/login');
+        }
+    }, [isAuthenticated, router, initialized])
 
     useEffect(() => {
-    console.log("AuthProvider mounted");
+        console.log("AuthProvider mounted");
 
-    if (!initialized) {
-        console.log("Calling hydrate");
-        hydrate();
-    }
-}, [initialized, hydrate]);
+        if (!initialized) {
+            console.log("Calling hydrate");
+            hydrate();
+        }
+    }, [initialized, hydrate]);
 
-    if(isLoading){
-        return(
+    if (isLoading) {
+        return (
             <div className='w-full h-full flex items-center justify-center'><Loader /></div>
         )
     }
