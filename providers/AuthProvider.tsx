@@ -21,10 +21,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, [isAuthenticated, router, initialized, pathName])
 
     useEffect(() => {
-        console.log("AuthProvider mounted");
 
         if (!initialized) {
-            console.log("Calling hydrate");
             hydrate();
         }
     }, [initialized, hydrate]);

@@ -89,9 +89,6 @@ const AddTransacitonDialog = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(form.formState.errors);
-  }, [form.formState.errors]);
 
 
   return (

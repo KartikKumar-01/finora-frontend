@@ -72,7 +72,6 @@ export const authStore = create<AuthStore>()(
         }
       },
       hydrate: async () => {
-        console.log("hydrate called");
           set({isLoading: true, error: null}, false, "auth/hydrateStart");
           try{
               const user = await authApi.getMe();

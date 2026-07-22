@@ -3,6 +3,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { useTransactionDelete } from '@/lib/query/transactions.mutation';
 import { Loader2 } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { BarLoader } from 'react-spinners';
 import { toast } from 'sonner';
 
 interface DeleteTransactionsDialogProps {
@@ -29,6 +30,7 @@ const DeleteTransactionsDialog = ({ children, transactionIds, accountId, clearSe
                 {children}
             </DialogTrigger>
             <DialogContent className='border-none bg-[#1b1722]'>
+                {<BarLoader  width={"95%"} color='#6366F1' loading={deleteTransactions.isPending}/>}
                 <DialogHeader>
                     <DialogTitle>Delete Transactions?</DialogTitle>
                     <DialogDescription>
