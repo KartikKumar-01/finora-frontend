@@ -2,22 +2,23 @@
 import React, { useEffect, useRef } from 'react'
 import { authStore } from '@/store/auth.store'
 import { Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const hydrate = authStore((s) => s.hydrate);
     const isLoading = authStore((s) => s.isLoading);
     const initialized = authStore((s) => s.initialized);
     const isAuthenticated = authStore((s) => s.isAuthenticated);
+    const pathName = usePathname();
     const hadHydrated = useRef(false);
     
     const router = useRouter();
 
     useEffect(() => {
-        if(initialized && !isAuthenticated){
+        if(initialized && !isAuthenticated && pathName != '/'){
             router.replace('/login');
         }
-    }, [isAuthenticated, router, initialized])
+    }, [isAuthenticated, router, initialized, pathName])
 
     useEffect(() => {
         console.log("AuthProvider mounted");

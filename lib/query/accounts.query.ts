@@ -13,4 +13,5 @@ export const useAccount = (accountId: string) =>
   useQuery<Account, AxiosError>({
     queryKey: ["account", accountId],
     queryFn: () =>  accountApi.getAccount(accountId),
+    enabled: !!accountId
   });
